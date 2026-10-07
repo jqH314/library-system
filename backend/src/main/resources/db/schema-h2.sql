@@ -1,0 +1,99 @@
+-- H2数据库建表脚本（MySQL兼容模式）
+
+DROP TABLE IF EXISTS operation_log;
+DROP TABLE IF EXISTS fine_record;
+DROP TABLE IF EXISTS borrow_record;
+DROP TABLE IF EXISTS book;
+DROP TABLE IF EXISTS book_category;
+DROP TABLE IF EXISTS sys_user;
+
+-- 用户表
+CREATE TABLE sys_user (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  real_name VARCHAR(50),
+  role VARCHAR(20) NOT NULL DEFAULT 'READER',
+  phone VARCHAR(20),
+  email VARCHAR(100),
+  avatar VARCHAR(255),
+  status INT NOT NULL DEFAULT 1,
+  max_borrow_count INT NOT NULL DEFAULT 5,
+  borrowed_count INT NOT NULL DEFAULT 0,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 图书分类表
+CREATE TABLE book_category (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  code VARCHAR(20) NOT NULL,
+  parent_id BIGINT DEFAULT 0,
+  sort INT DEFAULT 0,
+  status INT NOT NULL DEFAULT 1,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 图书表
+CREATE TABLE book (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  isbn VARCHAR(20) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  author VARCHAR(100),
+  publisher VARCHAR(100),
+  publish_date DATE,
+  category_id BIGINT,
+  price DECIMAL(10,2) DEFAULT 0.00,
+  total_count INT NOT NULL DEFAULT 1,
+  available_count INT NOT NULL DEFAULT 1,
+  cover_url VARCHAR(255),
+  description CLOB,
+  location VARCHAR(50),
+  status INT NOT NULL DEFAULT 1,
+  borrow_count INT NOT NULL DEFAULT 0,
+  version INT NOT NULL DEFAULT 0,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 借阅记录表
+CREATE TABLE borrow_record (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  book_id BIGINT NOT NULL,
+  borrow_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  due_time TIMESTAMP NOT NULL,
+  return_time TIMESTAMP,
+  status VARCHAR(20) NOT NULL DEFAULT 'BORROWED',
+  renew_count INT NOT NULL DEFAULT 0,
+  fine_amount DECIMAL(10,2) DEFAULT 0.00,
+  fine_paid INT NOT NULL DEFAULT 0,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 罚款记录表
+CREATE TABLE fine_record (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  borrow_id BIGINT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  reason VARCHAR(200),
+  status INT NOT NULL DEFAULT 0,
+  pay_time TIMESTAMP,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 操作日志表
+CREATE TABLE operation_log (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT,
+  username VARCHAR(50),
+  operation VARCHAR(100),
+  method VARCHAR(200),
+  params CLOB,
+  ip VARCHAR(50),
+  cost_time BIGINT DEFAULT 0,
+  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

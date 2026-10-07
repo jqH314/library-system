@@ -1,0 +1,65 @@
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar" bindtap="goSearch">
+    <text class="search-icon">🔍</text>
+    <text class="search-placeholder">搜索书名、作者、ISBN</text>
+  </view>
+
+  <!-- 分类导航 -->
+  <view class="card">
+    <view class="section-title">图书分类</view>
+    <view class="category-grid">
+      <view class="category-item" wx:for="{{categories}}" wx:key="id" bindtap="goCategory" data-id="{{item.id}}">
+        <view class="category-icon">📚</view>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门推荐 -->
+  <view class="card">
+    <view class="section-header">
+      <text class="section-title">🔥 热门推荐</text>
+      <text class="more" bindtap="goSearch">更多 ></text>
+    </view>
+    <scroll-view scroll-x class="book-scroll">
+      <view class="book-item" wx:for="{{hotBooks}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="book-cover">
+          <text class="cover-text">{{item.title}}</text>
+        </view>
+        <text class="book-title">{{item.title}}</text>
+        <text class="book-author">{{item.author}}</text>
+        <view class="book-meta">
+          <text class="tag tag-warning">热榜</text>
+          <text class="borrow-count">{{item.borrowCount}}人借阅</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 新书上架 -->
+  <view class="card">
+    <view class="section-header">
+      <text class="section-title">✨ 新书上架</text>
+      <text class="more" bindtap="goSearch">更多 ></text>
+    </view>
+    <view class="book-list">
+      <view class="book-list-item" wx:for="{{newBooks}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="book-cover-small">
+          <text class="cover-text-small">{{item.title}}</text>
+        </view>
+        <view class="book-info">
+          <text class="book-title">{{item.title}}</text>
+          <text class="book-author">{{item.author}}</text>
+          <text class="book-publisher">{{item.publisher}}</text>
+          <view class="book-status">
+            <text class="tag {{item.availableCount > 0 ? 'tag-success' : 'tag-danger'}}">
+              {{item.availableCount > 0 ? '可借' : '已借完'}}
+            </text>
+            <text class="available">剩余{{item.availableCount}}本</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
